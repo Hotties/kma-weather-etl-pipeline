@@ -2,11 +2,8 @@
 
 
 import csv
-import json
 import logging
 import os
-
-from transform.tramsform_weather import transform_weather_data
 
 def load_weather_data(forecast_dict):
     processed_file_path = "data/processed/weather_summary.csv"
@@ -30,12 +27,21 @@ def load_weather_data(forecast_dict):
             if not file_exists:
                 writer.writeheader()
 
-            count = 0
-            for key, data in forecast_dict.items():
+            ## writer.writerow()의 시행횟수를 줄이기 위해 수정
+            ## 수정 전 시행 횟수 : n, 수정 후 : 1
+            # count = 0
+            # for key, data in forecast_dict.items():
 
-                if data["temperature"] is not None:
-                    writer.writerow(data)
-                    count += 1   
+            #     if data["temperature"] is not None:
+            #         writer.writerow(data)
+            #         count += 1   
+            
+            rows = [
+                data for key, data in forecast_dict.items()
+                if data["temperature"] is not None
+            ]
+            count = len(rows)
+            writer.writerows(rows)
 
         logging.info(f"데이터 변환 및 적재 완료: {processed_file_path} ({count}건)")
         print(f"[SUCCESS] 변환 및 적재 완료: {processed_file_path} (총 {count}건)")    

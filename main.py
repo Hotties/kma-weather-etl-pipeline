@@ -1,11 +1,5 @@
-import datetime
-import json
-import logging
 import os
 from dotenv import load_dotenv
-import urllib.parse
-import urllib.request
-import gzip
 
 from directory import make_dir
 from extract.extract_weather import extract_weather_data

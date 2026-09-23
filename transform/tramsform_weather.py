@@ -2,7 +2,7 @@
 
 
 
-from compression import gzip
+import gzip
 import json
 import logging
 import os
@@ -28,10 +28,17 @@ def transform_weather_data(raw_file_path):
 
         forecast_dict = {}
 
+        ## 사용할 category를 mapping하여 코드의 가독성을 높임
+        category_mapping = {
+            "TMP": "temperature",
+            "REH": "humidity",
+            "POP": "rain_probability"
+        }
+
         for item in items:
             f_date = item.get("fcstDate")
             f_time = item.get("fcstTime")
-            category = item.get("category")
+            ##category = item.get("category")
             value = item.get("fcstValue")
 
             key = (f_date,f_time)
@@ -45,12 +52,17 @@ def transform_weather_data(raw_file_path):
                     "rain_probability": None, ## 강수확률
                 }
 
-            if category == "TMP":
-                forecast_dict[key]["temperature"] = value
-            elif category == "REH":
-                forecast_dict[key]["humidity"] = value
-            elif category == "POP":
-                forecast_dict[key]["rain_probability"] = value 
+            # if category == "TMP":
+            #     forecast_dict[key]["temperature"] = value
+            # elif category == "REH":
+            #     forecast_dict[key]["humidity"] = value
+            # elif category == "POP":
+            #     forecast_dict[key]["rain_probability"] = value 
+            
+            ## 조건문 사용 횟수 감소
+            if item.get("category") in category_mapping:
+                mapped_category = category_mapping[item.get("category")]
+                forecast_dict[key][mapped_category] = value
 
         return forecast_dict
         
