@@ -3,6 +3,7 @@ import logging
 
 def make_dir():
     os.makedirs("data/raw", exist_ok=True)
+    os.makedirs("data/processed", exist_ok=True)
     os.makedirs("logs", exist_ok=True)
 
     logging.basicConfig( 

@@ -22,6 +22,7 @@ def extract_weather_data(base_date, test_data, params):
         req = urllib.request.Request(full_url)
         with urllib.request.urlopen(req) as response:
             if response.status == 200:
+                logging.info(f"[INFO] API 호출 성공: {response.status}")
                 response_body = response.read().decode("utf-8")
                 data = json.loads(response_body)
 
@@ -38,6 +39,7 @@ def extract_weather_data(base_date, test_data, params):
 
                 logging.info(f"날씨 데이터 수집 성공 및 저장 완료: {file_path}")
                 print(f"[SUCCESS] 수집 완료: {file_path}")
+                return file_path
             else:
                 logging.error(f"API 호출 실패: {response.status}")
                 print(f"[ERROR] API 호출 실패: {response.status}")

@@ -19,7 +19,9 @@ def transform_weather_data(raw_file_path):
     ## open gzipped JSON file and read the data
     try:
         logging.info(f"Transforming weather data from: {raw_file_path}")
-        with gzip.open(raw_file_path,"r", encoding="utf-8") as f:
+
+        ## gzip을 열때 rt 모드로 열어야 함. (gzip.open()은 기본적으로 binary 모드로 열기 때문에, text 모드로 열어야 json.load()가 작동함)
+        with gzip.open(raw_file_path,"rt", encoding="utf-8") as f:
             raw_data = json.load(f)
 
         items = raw_data["response"]["body"]["items"]["item"]
