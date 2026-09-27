@@ -24,6 +24,11 @@ def transform_weather_data(raw_file_path):
         with gzip.open(raw_file_path,"rt", encoding="utf-8") as f:
             raw_data = json.load(f)
 
+        ## 데이터 구조 확인
+        if "response" not in raw_data or "body" not in raw_data["response"] or "items" not in raw_data["response"]["body"]:
+            logging.error(f"Unexpected JSON structure in raw data: {raw_file_path}")
+            return
+
         items = raw_data["response"]["body"]["items"]["item"]
 
         forecast_dict = {}

@@ -8,6 +8,10 @@ import os
 def load_weather_data(forecast_dict):
     processed_file_path = "data/processed/weather_summary.csv"
     file_exists = os.path.exists(processed_file_path)
+
+
+    ## 나중에 db 연결하여 load 구현
+    ## 현재 같은 params를 사용하면 중복데이터 발생
     
     try:
         # Load: CSV 파일로 저장 (Append 모드로 누적)

@@ -10,7 +10,14 @@ import gzip
 load_dotenv()
 
 def extract_weather_data(base_date, test_data, params):
-
+    if not os.getenv("ServiceKey") or not os.getenv("URL"):
+        logging.error("ServiceKey or URL is not set in the environment variables.")
+        print("[ERROR] ServiceKey or URL is not set in the environment variables.")
+        return None 
+    if not base_date or not test_data or not params:
+        logging.error("Base date, test data, or params are not provided.")
+        print("[ERROR] Base date, test data, or params are not provided.")
+        return None
     query_string = urllib.parse.urlencode(params)
     full_url = f"{os.getenv('URL')}?{query_string}"
 
@@ -20,7 +27,9 @@ def extract_weather_data(base_date, test_data, params):
         )
         # API 호출
         req = urllib.request.Request(full_url)
-        with urllib.request.urlopen(req) as response:
+
+        ## timeout 설정 추가
+        with urllib.request.urlopen(req, timeout=10) as response:
             if response.status == 200:
                 logging.info(f"[INFO] API 호출 성공: {response.status}")
                 response_body = response.read().decode("utf-8")
@@ -35,8 +44,9 @@ def extract_weather_data(base_date, test_data, params):
                 # Save the data as a gzipped JSON file
                 # 131byte -> 121byte
                 with gzip.open(file_path, "wt", encoding="utf-8") as f:
-                    json.dump(data, f, ensure_ascii=False, indent=4)
-
+                    ##json.dump(data, f, ensure_ascii=False, indent=4)
+                    json.dump(data, f, ensure_ascii = False, separators=(',', ':'))  ## compact하게 저장
+                    
                 logging.info(f"날씨 데이터 수집 성공 및 저장 완료: {file_path}")
                 print(f"[SUCCESS] 수집 완료: {file_path}")
                 return file_path

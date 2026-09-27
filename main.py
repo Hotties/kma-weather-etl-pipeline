@@ -1,9 +1,9 @@
+import logging
 import os
-from dotenv import load_dotenv
 
 from directory import make_dir
 from extract.extract_weather import extract_weather_data
-from transform.tramsform_weather import transform_weather_data
+from transform.transform_weather import transform_weather_data
 from load.load_weather import load_weather_data
 
 
@@ -42,5 +42,15 @@ if __name__ == "__main__":
 
     ### Extract weather data using the parameters
     raw_file_path = extract_weather_data(base_date, test_data, params)
+
+    ## if 문을 사용하여 none 값이 반환될 경우 프로그램 종료 처리
+    if not raw_file_path:
+        print("[ERROR] Raw file path is None. Exiting the program.")
+        logging.error("[ERROR] Raw file path is None. Exiting the program.")
+        exit(1)
     transformed_data = transform_weather_data(raw_file_path)
+    if not transformed_data:
+        print("[ERROR] Transformed data is None. Exiting the program.")
+        logging.error("[ERROR] Transformed data is None. Exiting the program.")
+        exit(1)
     load_weather_data(transformed_data)
