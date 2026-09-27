@@ -9,34 +9,34 @@ import gzip
 
 load_dotenv()
 
-def extract_weather_data(base_date, test_data, params):
+def extract_weather_data(base_date, base_time, params, timeout):
     if not os.getenv("ServiceKey") or not os.getenv("URL"):
         logging.error("ServiceKey or URL is not set in the environment variables.")
         print("[ERROR] ServiceKey or URL is not set in the environment variables.")
         return None 
-    if not base_date or not test_data or not params:
-        logging.error("Base date, test data, or params are not provided.")
-        print("[ERROR] Base date, test data, or params are not provided.")
+    if not base_date or not base_time or not params:
+        logging.error("Base date, base time, or params are not provided.")
+        print("[ERROR] Base date, base time, or params are not provided.")
         return None
     query_string = urllib.parse.urlencode(params)
     full_url = f"{os.getenv('URL')}?{query_string}"
 
     try:
         logging.info(
-            f"날씨 데이터 수집 시작 (날짜: {base_date}, 발표시각: {test_data['base_time']})"
+            f"날씨 데이터 수집 시작 (날짜: {base_date}, 발표시각: {base_time})"
         )
         # API 호출
         req = urllib.request.Request(full_url)
 
         ## timeout 설정 추가
-        with urllib.request.urlopen(req, timeout=10) as response:
+        with urllib.request.urlopen(req, timeout=timeout) as response:
             if response.status == 200:
                 logging.info(f"[INFO] API 호출 성공: {response.status}")
                 response_body = response.read().decode("utf-8")
                 data = json.loads(response_body)
 
                 #create reult file name
-                file_path = f"data/raw/weather_{base_date}_{test_data['base_time']}.json.gz"
+                file_path = f"data/raw/weather_{base_date}_{base_time}.json.gz"
 
                 # with open(file_path, "w", encoding="utf-8") as f:
                 #     json.dump(data, f, ensure_ascii=False, indent=4)
