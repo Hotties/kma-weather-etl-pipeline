@@ -35,7 +35,7 @@ from config import API_URL, API_KEY, BASE_TIME, NX, NY, TIMEOUT, PAGE_NO, NUM_OF
 #     return base_date, test_data, params
 
 def set_params():
-    now = datetime.datetime.now()
+    now = datetime.now()
     base_date = now.strftime("%Y%m%d")  # 현재 날짜를 YYYYMMDD 형식으로 가져오기
 
     params = {
@@ -49,6 +49,7 @@ def set_params():
         "ny": NY
     }
     return base_date, BASE_TIME, params
+
 if __name__ == "__main__":
 
     ## Create necessary directories
@@ -58,7 +59,7 @@ if __name__ == "__main__":
     base_date, base_time, params = set_params()
 
     ### Extract weather data using the parameters
-    raw_file_path = extract_weather_data(base_date, base_time, params,timeout = TIMEOUT)
+    raw_file_path = extract_weather_data(API_URL, base_date, base_time, params, time = TIMEOUT)
 
     ## if 문을 사용하여 none 값이 반환될 경우 프로그램 종료 처리
     if not raw_file_path:
@@ -70,4 +71,4 @@ if __name__ == "__main__":
         print("[ERROR] Transformed data is None. Exiting the program.")
         logging.error("[ERROR] Transformed data is None. Exiting the program.")
         exit(1)
-    load_weather_data(transformed_data)
+    load_weather_data(transformed_data, base_date)

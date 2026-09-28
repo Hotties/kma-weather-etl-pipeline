@@ -9,17 +9,17 @@ import gzip
 
 load_dotenv()
 
-def extract_weather_data(base_date, base_time, params, timeout):
-    if not os.getenv("ServiceKey") or not os.getenv("URL"):
-        logging.error("ServiceKey or URL is not set in the environment variables.")
-        print("[ERROR] ServiceKey or URL is not set in the environment variables.")
+def extract_weather_data(api_url, base_date, base_time, params, time):
+    if not os.getenv("ServiceKey") :
+        logging.error("ServiceKey is not set in the environment variables.")
+        print("[ERROR] ServiceKey is not set in the environment variables.")
         return None 
     if not base_date or not base_time or not params:
         logging.error("Base date, base time, or params are not provided.")
         print("[ERROR] Base date, base time, or params are not provided.")
         return None
     query_string = urllib.parse.urlencode(params)
-    full_url = f"{os.getenv('URL')}?{query_string}"
+    full_url = f"{api_url}?{query_string}"
 
     try:
         logging.info(
@@ -28,8 +28,8 @@ def extract_weather_data(base_date, base_time, params, timeout):
         # API 호출
         req = urllib.request.Request(full_url)
 
-        ## timeout 설정 추가
-        with urllib.request.urlopen(req, timeout=timeout) as response:
+        ## time 설정 추가
+        with urllib.request.urlopen(req, timeout=time) as response:
             if response.status == 200:
                 logging.info(f"[INFO] API 호출 성공: {response.status}")
                 response_body = response.read().decode("utf-8")
